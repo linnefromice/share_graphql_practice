@@ -1,0 +1,11 @@
+type Comment {
+  id: ID!
+  text: String
+}
+type Query {
+  hello: String
+  comments: [Comment!]
+}
+type Mutation {
+  addComment(text: String!): Comment!
+}
