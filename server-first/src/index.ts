@@ -1,50 +1,96 @@
 import { ApolloServer, gql } from 'apollo-server';
 import fs from 'fs';
 
+type ID = string;
+enum TodoStatus {
+  done,
+  pending,
+}
+
 interface Comment {
-  id: number;
-  text: string;
+  todoid: ID;
+  commentid: string;
+  content?: string;
+}
+interface Todo {
+  id: ID;
+  name?: string;
+  description?: string;
+  priority?: number;
+  status?: TodoStatus;
+  comments?: Comment[];
+}
+interface TodoConnection {
+  todos: Todo[];
+  nextToken: string;
 }
 
 // DataSource
 const comments: Comment[] = [
   {
-    id: 1,
-    text: 'first comment',
+    todoid: '1',
+    commentid: '1',
+    content: 'content 1',
   },
   {
-    id: 2,
-    text: 'second comment',
+    todoid: '2',
+    commentid: '2',
+    content: 'content 2',
+  },
+  {
+    todoid: '3',
+    commentid: '3',
+    content: 'content 3',
+  },
+];
+const todos: Todo[] = [
+  {
+    id: '1',
+  },
+  {
+    id: '2',
+  },
+  {
+    id: '3',
+  },
+  {
+    id: '4',
+  },
+  {
+    id: '5',
+  },
+  {
+    id: '6',
   },
 ];
 
-// use GraphQL
-/*
-const typeDefs = gql`
-  type Comment {
-    id: ID!
-    text: String
-  }
-  type Query {
-    hello: String
-    comments: [Comment!]
-  }
-  type Mutation {
-    addComment(text: String!): Comment!
-  }
-`;
-*/
 const typeDefs = gql(fs.readFileSync('schema.graphql', 'utf8'));
 const resolvers = {
   Query: {
-    hello: () => 'Hello, World! Hello, GraphQL!',
-    comments: () => comments,
+    getTodos: (parent: any, args: any, context: any) => {
+      const { limit, nextToken } = args;
+      const index = todos.findIndex((todo) => todo.id === nextToken);
+      const result = todos.slice(index, index + limit);
+
+      return {
+        todos: result,
+        nextToken: todos[index + limit]?.id,
+      };
+    },
   },
   Mutation: {
+    addTodo: async (parent: any, args: any, context: any) => {
+      const todo: Todo = {
+        id: String(todos.length + 1),
+      };
+      todos.push(todo);
+      return todo;
+    },
     addComment: async (parent: any, args: any, context: any) => {
-      const comment = {
-        id: comments.length + 1,
-        text: args.text,
+      const comment: Comment = {
+        todoid: String(comments.length + 1),
+        commentid: '',
+        content: args.text,
       };
       comments.push(comment);
       return comment;

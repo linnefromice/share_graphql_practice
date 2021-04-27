@@ -1,11 +1,30 @@
 type Comment {
+  todoid: ID!
+  commentid: String!
+  content: String
+}
+type Todo {
   id: ID!
-  text: String
+  name: String
+  description: String
+  priority: Int
+  status: TodoStatus
+  comments: [Comment]
 }
+type TodoConnection {
+  todos: [Todo]
+  nextToken: String
+}
+enum TodoStatus {
+  done
+  pending
+}
+
 type Query {
-  hello: String
-  comments: [Comment!]
+  getTodos(limit: Int, nextToken: String): TodoConnection
 }
+
 type Mutation {
-  addComment(text: String!): Comment!
+  addTodo(id: ID!, name: String, description: String, priority: Int, status: TodoStatus): Todo
+  addComment(todoid: ID!, content: String): Comment
 }
