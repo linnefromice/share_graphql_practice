@@ -1,24 +1,80 @@
 import { VFC } from 'react';
-import logo from './logo.svg';
+import { useQuery, gql } from '@apollo/client';
 import './App.css';
+import { getPosts } from './__generated__/types';
 
-const App: VFC = () => (
-  <div className="App">
-    <header className="App-header">
-      <img src={logo} className="App-logo" alt="logo" />
-      <p>
-        Edit <code>src/App.tsx</code> and save to reload.
-      </p>
-      <a
-        className="App-link"
-        href="https://reactjs.org"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Learn React
-      </a>
-    </header>
-  </div>
-);
+const GET_ALL = gql`
+  query GetAll {
+    posts {
+      id
+      title
+      body
+      published
+    }
+    drafts {
+      id
+      title
+      body
+      published
+    }
+  }
+`;
+
+const GET_POSTS = gql`
+  query GetPosts {
+    posts {
+      id
+      title
+      body
+      published
+    }
+  }
+`;
+
+const GET_DRAFTS = gql`
+  query GetDrafts {
+    posts {
+      id
+      title
+      body
+      published
+    }
+  }
+`;
+
+/* eslint-disable */
+const App: VFC = () => {
+  const { loading, error, data } = useQuery<getPosts>(GET_POSTS);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
+
+  return (
+    <div>
+      <h1>POSTS</h1>
+      {data!.posts!.map((post) => {
+        if (!post) {
+          return null;
+        }
+        const { id, title, body, published } = post;
+        return (
+          <div key={id}>
+            <p>{`${id} ${title} ${body} ${published}`}</p>
+          </div>
+        );
+      })}
+      <h1>DRAFTS</h1>
+      {data!.drafts!.map((draft) => {
+        if (!draft) return;
+        const { id, title, body, published } = draft;
+        return (
+          <div key={id}>
+            <p>{`${id} ${title} ${body} ${published}`}</p>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+/* eslint-enable */
 
 export default App;
