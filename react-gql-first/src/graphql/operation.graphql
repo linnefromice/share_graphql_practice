@@ -1,0 +1,27 @@
+fragment PostFields on Post {
+  id
+  title
+  body
+  published
+}
+
+query GetAll {
+  posts {
+    ...PostFields
+  }
+  drafts {
+    ...PostFields
+  }
+}
+
+query GetPosts {
+  posts {
+    ...PostFields
+  }
+}
+
+query GetDrafts {
+  drafts {
+    ...PostFields
+  }
+}
