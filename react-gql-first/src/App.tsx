@@ -4,7 +4,7 @@ import './App.css';
 import {
   GetAllQuery,
   GetAllQueryVariables,
-} from '__generated__/gqlCodeGenerator/client';
+} from 'graphql/__generated__/typescript-operations/client';
 
 const GET_ALL = gql`
   query GetAll {
