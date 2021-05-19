@@ -1,0 +1,8 @@
+# codegen.yml
+schema: http://localhost:4000/
+documents: src/App.tsx
+generates:
+  src/__generated__/gqlCodeGenerator/client.ts:
+    plugins:
+      - typescript
+      - typescript-operations

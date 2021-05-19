@@ -1,7 +1,10 @@
 import { VFC } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import './App.css';
-import { getPosts } from './__generated__/types';
+import {
+  GetAllQuery,
+  GetAllQueryVariables,
+} from '__generated__/gqlCodeGenerator/client';
 
 const GET_ALL = gql`
   query GetAll {
@@ -44,7 +47,8 @@ const GET_DRAFTS = gql`
 
 /* eslint-disable */
 const App: VFC = () => {
-  const { loading, error, data } = useQuery<getPosts>(GET_POSTS);
+  const { loading, error, data } =
+    useQuery<GetAllQuery, GetAllQueryVariables>(GET_ALL);
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
 
